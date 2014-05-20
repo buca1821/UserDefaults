@@ -81,9 +81,10 @@ typedef enum {
 {
     for (id obj in array) {
         if (![self objectConforms:obj]) {
-            return;
+            return NO;
         }
     }
+    return YES;
 }
 
 -(BOOL)objectConforms:(id)obj
