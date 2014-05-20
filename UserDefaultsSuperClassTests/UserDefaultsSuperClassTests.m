@@ -30,6 +30,26 @@
 
 - (void)testUserDefaults
 {
+    NSString * myObject = @"oneObject";
+    [UserDefaultsSuperClass saveUserDefaultsObject:myObject withKey:OneKey];
+    
+    NSString *myObjectRecovered = [UserDefaultsSuperClass getUserDefaultsObjectWithKey:OneKey];
+    XCTAssertTrue([myObject isEqualToString:myObjectRecovered], @"The objects should be equal!");
+}
+
+- (void)testSaveAnArray
+{
+    NSArray *array = @[@"1",@"2",@"3"];
+    [UserDefaultsSuperClass saveUserDefaultsObject:array withKey:OneKey];
+    
+    NSArray *arrayNew = [UserDefaultsSuperClass getUserDefaultsObjectWithKey:OneKey];
+    
+    int i=0;
+    for (NSString *obj in arrayNew) {
+        XCTAssertTrue([obj isEqualToString:[array objectAtIndex:i]], @"strings shoud be equal!");
+        i++;
+    }
+ 
     
 }
 

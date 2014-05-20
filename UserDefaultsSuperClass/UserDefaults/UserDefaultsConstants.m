@@ -6,4 +6,4 @@
 //  Copyright (c) 2014 Luis Enrique López  Martínez. All rights reserved.
 //
 
-NSString *const MyThingNotificationKey = @"MyThingNotificationKey";
+NSString *const OneKey = @"OneKey";

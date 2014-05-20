@@ -20,9 +20,8 @@ typedef enum {
 
 @implementation UserDefaultsSuperClass
 
--(void)saveUserDefaultsObject:(id)obj withKey:(NSString *)key
++(void)saveUserDefaultsObject:(id)obj withKey:(NSString *)key
 {
-    [self getObjectTypeForObject:obj];
     switch ([self getObjectTypeForObject:obj]) {
         case kStringClass:
         case kArrayClass:
@@ -37,12 +36,12 @@ typedef enum {
     [userDefaults synchronize];
 }
 
--(id)getUserDefaultsObjectWithKey:(NSString *)key
++(id)getUserDefaultsObjectWithKey:(NSString *)key
 {
     return [userDefaults objectForKey:key];
 }
 
--(void)writeArrayWithCustomObjToUserDefaults:(NSString *)key withArray:(NSMutableArray *)array
++(void)writeArrayWithCustomObjToUserDefaults:(NSString *)key withArray:(NSMutableArray *)array
 {
     if ([self isArrayOK:array]) {
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:array];
@@ -51,7 +50,7 @@ typedef enum {
     }
 }
 
--(NSArray *)readArrayWithCustomObjFromUserDefaults:(NSString*)key
++(NSArray *)readArrayWithCustomObjFromUserDefaults:(NSString*)key
 {
     NSData *data = [userDefaults objectForKey:key];
     NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -60,7 +59,7 @@ typedef enum {
 }
 
 #pragma mark - helper
--(int)getObjectTypeForObject:(id)obj
++(int)getObjectTypeForObject:(id)obj
 {
     if ([obj isKindOfClass:[NSString class]]) {
         return kStringClass;
@@ -77,7 +76,7 @@ typedef enum {
     return kNotRecognizedClass;
 }
 
--(BOOL)isArrayOK:(NSMutableArray *)array
++(BOOL)isArrayOK:(NSMutableArray *)array
 {
     for (id obj in array) {
         if (![self objectConforms:obj]) {
@@ -87,13 +86,18 @@ typedef enum {
     return YES;
 }
 
--(BOOL)objectConforms:(id)obj
++(BOOL)objectConforms:(id)obj
 {
     BOOL conforms = YES;
     if (![[obj class] instancesRespondToSelector:@selector(encodeWithCoder:)]) {
         conforms = NO;
+        NSString * message = [NSString stringWithFormat:@"object of class %@ in array should implement encodeWithCoder", [obj class]];
+        NSAssert(conforms,message);
     } else if (![[obj class] instancesRespondToSelector:@selector(initWithCoder:)]){
         conforms = NO;
+        
+        NSString * message = [NSString stringWithFormat:@"object of class %@ in array should implement initWithCoder", [obj class]];
+        NSAssert(conforms, message);
     }
     
     return conforms;

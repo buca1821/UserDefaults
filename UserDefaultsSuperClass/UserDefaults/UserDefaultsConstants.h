@@ -7,4 +7,4 @@
 //
 
 
-extern NSString *const MyThingNotificationKey;
+extern NSString *const OneKey;

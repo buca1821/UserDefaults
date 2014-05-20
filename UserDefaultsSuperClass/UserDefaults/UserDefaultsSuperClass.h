@@ -11,10 +11,10 @@
 
 @interface UserDefaultsSuperClass : NSObject
 
--(void)saveUserDefaultsObject:(id)obj withKey:(NSString *)key;
--(id)getUserDefaultsObjectWithKey:(NSString *)key;
++(void)saveUserDefaultsObject:(id)obj withKey:(NSString *)key;
++(id)getUserDefaultsObjectWithKey:(NSString *)key;
 
--(NSArray *)readArrayWithCustomObjFromUserDefaults:(NSString*)key;
--(void)writeArrayWithCustomObjToUserDefaults:(NSString *)key withArray:(NSMutableArray *)array;
++(NSArray *)readArrayWithCustomObjFromUserDefaults:(NSString*)key;
++(void)writeArrayWithCustomObjToUserDefaults:(NSString *)key withArray:(NSMutableArray *)array;
 
 @end
