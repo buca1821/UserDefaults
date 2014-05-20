@@ -23,19 +23,43 @@ typedef enum {
 -(void)saveUserDefaultsObject:(id)obj withKey:(NSString *)key
 {
     [self getObjectTypeForObject:obj];
-    [userDefaults setObject:obj forKey:key];
+    switch ([self getObjectTypeForObject:obj]) {
+        case kStringClass:
+        case kArrayClass:
+        case kDictionaryClass:
+        {
+           [userDefaults setObject:obj forKey:key];
+        }
+            break;
+        default:
+            break;
+    }
     [userDefaults synchronize];
 }
 
 -(id)getUserDefaultsObjectWithKey:(NSString *)key
 {
-    id obj;
-    
-    return obj;
+    return [userDefaults objectForKey:key];
+}
+
+-(void)writeArrayWithCustomObjToUserDefaults:(NSString *)key withArray:(NSMutableArray *)array
+{
+    if ([self isArrayOK:array]) {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:array];
+        [userDefaults setObject:data forKey:key];
+        [userDefaults synchronize];
+    }
+}
+
+-(NSArray *)readArrayWithCustomObjFromUserDefaults:(NSString*)key
+{
+    NSData *data = [userDefaults objectForKey:key];
+    NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    [userDefaults synchronize];
+    return array;
 }
 
 #pragma mark - helper
-
 -(int)getObjectTypeForObject:(id)obj
 {
     if ([obj isKindOfClass:[NSString class]]) {
@@ -51,5 +75,26 @@ typedef enum {
     }
     
     return kNotRecognizedClass;
+}
+
+-(BOOL)isArrayOK:(NSMutableArray *)array
+{
+    for (id obj in array) {
+        if (![self objectConforms:obj]) {
+            return;
+        }
+    }
+}
+
+-(BOOL)objectConforms:(id)obj
+{
+    BOOL conforms = YES;
+    if (![[obj class] instancesRespondToSelector:@selector(encodeWithCoder:)]) {
+        conforms = NO;
+    } else if (![[obj class] instancesRespondToSelector:@selector(initWithCoder:)]){
+        conforms = NO;
+    }
+    
+    return conforms;
 }
 @end
